@@ -516,6 +516,18 @@ const JIRA_PROJECTS = {
   PROJQUAY: { key: 'PROJQUAY', pid: '10217' },
 }
 
+// jiraComponentIDForRelease returns the computed Jira component ID for a test,
+// but only when its bug will be filed into the default OCPBUGS project. Jira
+// component IDs are scoped to a single project, and the computed ID comes from
+// the OCPBUGS component list, so it is not valid for other projects (e.g.,
+// PROJQUAY); for those, return undefined and let the user select a component.
+export function jiraComponentIDForRelease(release, componentID) {
+  if (jiraProjectForRelease(release).key === 'OCPBUGS') {
+    return componentID
+  }
+  return undefined
+}
+
 // jiraProjectForRelease returns the Jira project (key and redhat.atlassian.net
 // project id) that bugs for the given release should be filed into. The quay-*
 // synthetic releases file into PROJQUAY instead of the default OCPBUGS.

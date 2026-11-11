@@ -326,7 +326,9 @@ See the [sippy test details|${url}] for additional context.
                   component={component}
                   capability={capability}
                   jiraProjectID={jiraProjectID}
-                  jiraComponentID={String(jiraComponentID)}
+                  jiraComponentID={
+                    jiraComponentID ? String(jiraComponentID) : undefined
+                  }
                   labels={formData.labels}
                   context={formData.description}
                 />

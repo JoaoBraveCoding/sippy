@@ -1,5 +1,6 @@
 import {
   ageColor,
+  jiraComponentIDForRelease,
   jiraProjectForRelease,
   pathForExactTestAnalysisWithVariants,
   pathForJobRunsWithTestFailureHistory,
@@ -102,6 +103,18 @@ describe('jiraProjectForRelease', () => {
     [undefined, { key: 'OCPBUGS', pid: '10325' }],
   ])('%s -> %o', (release, expected) => {
     expect(jiraProjectForRelease(release)).toEqual(expected)
+  })
+})
+
+describe('jiraComponentIDForRelease', () => {
+  test.each([
+    ['4.22', 12345, 12345],
+    ['rosa-4.22', 12345, 12345],
+    [undefined, 12345, 12345],
+    ['quay-3.18', 12345, undefined],
+    ['quay-3.18', undefined, undefined],
+  ])('%s with %p -> %p', (release, componentID, expected) => {
+    expect(jiraComponentIDForRelease(release, componentID)).toBe(expected)
   })
 })
 

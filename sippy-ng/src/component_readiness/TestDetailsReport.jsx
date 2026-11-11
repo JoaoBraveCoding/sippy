@@ -27,6 +27,7 @@ import {
 import { CompReadyVarsContext } from './CompReadyVars'
 import { FileCopy, Help } from '@mui/icons-material'
 import {
+  jiraComponentIDForRelease,
   jiraProjectForRelease,
   pathForExactTestAnalysisWithFilter,
 } from '../helpers'
@@ -401,6 +402,14 @@ View the [test details report|${document.location.href}] for additional context.
     }
 
     const jiraProject = jiraProjectForRelease(sampleRelease)
+    // Jira component IDs are scoped to a project: the computed ID comes from
+    // the OCPBUGS component list, so it is only valid when filing into the
+    // default OCPBUGS project. For other projects (e.g. PROJQUAY), leave it
+    // unset and let the user select a component.
+    const jiraComponentID = jiraComponentIDForRelease(
+      sampleRelease,
+      data.jira_component_id
+    )
 
     if (writeEndpointsEnabled) {
       return (
@@ -408,7 +417,7 @@ View the [test details report|${document.location.href}] for additional context.
           {...commonProps}
           regressionId={regressionId}
           version={sampleRelease}
-          jiraComponentID={Number(data.jira_component_id)}
+          jiraComponentID={Number(jiraComponentID)}
           jiraComponentName={data.jira_component}
           jiraProject={jiraProject.key}
           jiraProjectID={jiraProject.pid}
@@ -420,7 +429,9 @@ View the [test details report|${document.location.href}] for additional context.
         <BugButton
           {...commonProps}
           jiraProjectID={jiraProject.pid}
-          jiraComponentID={String(data.jira_component_id)}
+          jiraComponentID={
+            jiraComponentID ? String(jiraComponentID) : undefined
+          }
         />
       )
     }
